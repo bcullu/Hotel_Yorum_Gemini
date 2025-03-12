@@ -11,20 +11,21 @@ from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmb
 from dotenv import load_dotenv
 import os
 import time
+import toml
 import google.generativeai as genai
 from typing import List  # Import List for type hinting
 from langchain_core.messages import AIMessage, HumanMessage  # Import message types
 from bs4 import BeautifulSoup #For HTML Parsing
 
 load_dotenv()
-google_api_key = os.getenv('GOOGLE_API_KEY')
+google_api_key = st.secrets('GOOGLE_API_KEY')
 
 # Configure Google AI
 genai.configure(api_key=google_api_key)
 
 # --- Load Data (with Error Handling) ---
 try:
-    df = pd.read_pickle("/Users/batuhancullu/Documents/otel_yorum_scp/Hotel_RAG/PPAD_24/veri.pkl")
+    df = pd.read_pickle("Hotel_RAG_Gemini/Hotel_Yorum_Gemini/data/veri")
 except FileNotFoundError:
     st.error("Error: Could not find veri.pkl. Please make sure the file exists.")
     st.stop()
@@ -99,13 +100,14 @@ def create_conversation_chain(vectorstore):
 
         # --- CHAIN ---
         chain = (
-            RunnablePassthrough.assign(context=retriever | (lambda docs: "\n\n".join(doc.page_content for doc in docs)))
+            RunnablePassthrough.assign(
+                context=lambda x: retriever.invoke(x["input"]),
+            )
             | prompt
             | llm
             | StrOutputParser()
         )
         return chain
-
 
     except Exception as e:
         st.error(f"Error creating conversation chain: {e}")
@@ -209,5 +211,7 @@ def main():
                 st.error("Please select a hotel with reviews to start the conversation.")
             else:
                 handle_userinput(user_question, st.session_state['conversation']) #Pass the chain
+
+
 if __name__ == '__main__':
     main()
