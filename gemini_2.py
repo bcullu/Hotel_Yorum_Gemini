@@ -23,7 +23,7 @@ genai.configure(api_key=google_api_key)
 
 # --- Load Data (with Error Handling) ---
 try:
-    df = pd.read_pickle("/Users/batuhancullu/Documents/otel_yorum_scp/Hotel_RAG/PPAD_24/veri.pkl")
+    df = pd.read_pickle("./data/veri")
 except FileNotFoundError:
     st.error("Error: Could not find veri.pkl. Please make sure the file exists.")
     st.stop()
