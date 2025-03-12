@@ -100,7 +100,7 @@ def create_conversation_chain(vectorstore):
         # --- RETRIEVER with parameters ---
         retriever = vectorstore.as_retriever(
             search_type="similarity",
-            search_kwargs={"k": 100}  # Retrieve more documents for better context
+            search_kwargs={"k": 1000}  # Retrieve more documents for better context
         )
 
         # --- DEBUGGABLE CHAIN ---
