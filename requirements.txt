@@ -4,6 +4,6 @@ python-dotenv
 langchain>=0.1.12,<0.2
 faiss-cpu
 google-generativeai
-langchain-google-genai=1.0.3
+langchain-google-genai==1.0.3
 beautifulsoup4
 lxml
